@@ -7,10 +7,11 @@ const fs = require('fs');
 const WebSocket = require('ws');
 
 const app = express();
-const port = 3003;
+const port = process.env.PORT || 3003;
 
-// WebSocket 서버 생성
-const wss = new WebSocket.Server({ port: 3004 });
+// WebSocket 서버 생성을 Express 서버와 통합
+const server = require('http').createServer(app);
+const wss = new WebSocket.Server({ server });
 
 // CORS 설정
 app.use(cors());
@@ -95,7 +96,7 @@ app.post('/convert', upload.single('video'), (req, res) => {
         .save(outputPath);
 });
 
-// 서버 시작
-app.listen(port, () => {
-    console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);
+// 서버 시작 부분 수정
+server.listen(port, () => {
+    console.log(`서버가 포트 ${port}에서 실행 중입니다.`);
 }); 
